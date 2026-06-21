@@ -1,0 +1,19 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     ADD THESE TO YOUR AndroidManifest.xml
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- Permissions (inside <manifest> tag) -->
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+<uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+<uses-permission android:name="android.permission.VIBRATE" />
+
+<!-- Inside <application> tag -->
+<receiver
+    android:name=".ReminderReceiver"
+    android:exported="true">       <!-- ← must be true for AlarmManager to reach it -->
+    <intent-filter>
+        <action android:name="com.kdu.mc.lifelogger.REMINDER" />
+    </intent-filter>
+</receiver>

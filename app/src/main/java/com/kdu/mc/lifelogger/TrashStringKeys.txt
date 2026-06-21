@@ -1,0 +1,85 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Add these keys to your textOf() / strings map
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Key                       English                                  Sinhala
+// ─────────────────────────────────────────────────────────────────────────────
+"Trash"                   -> "Trash"                              // "කුණු"
+"trash_empty"             -> "Trash is empty"                    // "කුණු බඳුන හිස්ය"
+"trash_empty_sub"         -> "Deleted entries will appear here"  // "මකා දැමූ සටහන් මෙහි දිස් වේ"
+"trash_auto_delete_info"  -> "Items are permanently deleted after 30 days"
+                                                                  // "දින 30 කට පසු ස්ථිරවම මකා දමයි"
+"trash_empty_btn"         -> "Empty Trash"                       // "කුණු හිස් කරන්න"
+"trash_empty_title"       -> "Empty Trash?"                      // "කුණු හිස් කරන්නද?"
+"trash_empty_message"     -> "All items will be permanently deleted. This cannot be undone."
+                                                                  // "සියල්ල ස්ථිරවම මකා දැමේ. මෙය 되돌릴නොහැකිය."
+"trash_empty_confirm"     -> "Empty"                             // "හිස් කරන්න"
+"trash_restore"           -> "Restore"                           // "නැවත ගන්න"
+"trash_restore_selected"  -> "Restore entries?"                  // "සටහන් නැවත ගන්නද?"
+"trash_restore_message"   -> "Restore %d selected item(s) back to your journal?"
+                                                                  // "%d සටහන් ජර්නලයට නැවත ගෙන යයිද?"
+"trash_delete_selected"   -> "Delete permanently?"               // "ස්ථිරවම මකන්නද?"
+"trash_delete_message"    -> "Selected items will be permanently deleted and cannot be recovered."
+                                                                  // "තෝරාගත් සටහන් ස්ථිරවම මකා දැමේ."
+"trash_days_left"         -> "%d days left"                      // "දින %d ඉතිරිය"
+"trash_expires_today"     -> "Expires today"                     // "අද කල් ඉකුත් වේ"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DrawerContent — wire up the Trash menu item (currently missing onNavigate):
+// ─────────────────────────────────────────────────────────────────────────────
+// Change this in DrawerContent.kt:
+//
+//   DrawerMenuItem(painter = painterResource(id = R.drawable.bin), text = textOf(language, "Trash")) {
+//       scope.launch { drawerState.close() }          // ← OLD (no navigation)
+//   }
+//
+// To:
+//   DrawerMenuItem(painter = painterResource(id = R.drawable.bin), text = textOf(language, "Trash")) {
+//       scope.launch {
+//           drawerState.close()
+//           onNavigate("trash")                        // ← NEW
+//       }
+//   }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NavGraph / MainActivity — add the trash route:
+// ─────────────────────────────────────────────────────────────────────────────
+// composable("trash") {
+//     TrashScreen(
+//         trashedEntries  = viewModel.trashedEntries,
+//         language        = language,
+//         onBack          = { navController.popBackStack() },
+//         onRestoreEntries = { indices -> viewModel.restoreEntries(indices) },
+//         onPermanentDelete = { indices -> viewModel.permanentlyDelete(indices) },
+//         onEmptyTrash    = { viewModel.emptyTrash() }
+//     )
+// }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ViewModel — suggested methods to add:
+// ─────────────────────────────────────────────────────────────────────────────
+// val trashedEntries: List<TrashedEntry>   (StateFlow or derived from DB)
+//
+// fun moveToTrash(index: Int) {
+//     val entry = entries[index]
+//     _trashedEntries.add(TrashedEntry(entry, deletedAt = System.currentTimeMillis()))
+//     _entries.removeAt(index)
+// }
+//
+// fun restoreEntries(indices: Set<Int>) {
+//     val toRestore = indices.sortedDescending().map { trashedEntries[it] }
+//     toRestore.forEach { _entries.add(it.entry) }
+//     _trashedEntries.removeAll(toRestore.toSet())
+// }
+//
+// fun permanentlyDelete(indices: Set<Int>) {
+//     val toDelete = indices.sortedDescending().map { trashedEntries[it] }
+//     _trashedEntries.removeAll(toDelete.toSet())
+// }
+//
+// fun emptyTrash() { _trashedEntries.clear() }
+//
+// // Call this periodically (e.g. on app start) to auto-purge expired items:
+// fun purgeExpiredTrash() {
+//     _trashedEntries.removeAll { daysUntilAutoDelete(it.deletedAt) == 0 }
+// }

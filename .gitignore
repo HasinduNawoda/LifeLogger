@@ -1,0 +1,25 @@
+# ========== Android Studio ==========
+.idea/
+*.iml
+
+# ========== Build outputs ==========
+.gradle/
+build/
+*/build/
+*/app/build/
+
+# ========== Local config ==========
+local.properties
+
+# ========== Firebase (ONLY if you decide not to track it) ==========
+# google-services.json   <-- DO NOT enable this unless you want CI secrets setup
+
+# ========== OS files ==========
+.DS_Store
+Thumbs.db
+
+# ========== Logs ==========
+*.log
+
+# ========== Kotlin/Java ==========
+*.class
